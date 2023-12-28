@@ -17,7 +17,6 @@ import go.kr.dsp.api.CryptoModule;
 public class EncryptController {
 
 	String strKey = "rAKr1kf+NERW2TG+CmgKN/k9JOu0nct9aPXnHzp0RQ4=";
-	// String sdata = "Temporary Message for Encrypt";
 	String encVer = "1";
 
 	@GetMapping("/test1")
@@ -34,14 +33,13 @@ public class EncryptController {
 		jsonObject.put("API_KEY", "87we98rn8ennr7wmm98emj798we7");
 		jsonObject.put("ENC_KEY_VERSION", "2.1");
 		jsonObject.put("INS_CODE", "11");
-		jsonObject.put("RESPONSE_CODE", "200");
 
 		/*
-		 * wkl163M5GO959xITTp3rvvwQHPcJH1TfERKSwSRgLBWCx9LrlLVgjxZ4Wm5o1rmzwNgqXQOAibBYNs7WhSDUTVm1KOlKHKc
-		 * +qCQShWaFAKxSfZW+qyuRjnv3F4A7ZD9sJQ/+rtyViuiM39OXedpbKzZb/uH8I9C8Z8m4WEHRJsbt
-		 * /ENXV+85InA6xX1YyhF6yevCiNdf2Fxd5BLrL7vPbemWismKn12VEjmh+Hzarm7wa+
-		 * uGq7WA1cK3tgwRGddCx4YjP01jWxRBXtsdBiw3O6wTuGIvVAKKTOlIG8Aq6Ffed5BVHCcIdPBr2Cl3jF
-		 * /VHVfJ/J9bR+w1WvGehkCwsdL1CR8puBM+f7wBt4U7z8w=
+		 * 1.공통코드조회 POST
+		 * https://api.openservice.go.kr/dev/I0000002/CarInscRsrvSrvc/retrieveMoisCmmCd
+		 * Accept: application/json Content-Type: application/json Enc-key-version: 2
+		 * Ins-Code: I0000008 Response-Code: 0 {"data":
+		 * "IVf4T6yI80xKDqDbZmEMkz5iEJDcaA2EHBymA3I45D0CGSiHmxCs+w34AkJSZ99p6NSWxygFgIvtHkudInuutGTsV+gkdOuoqf3oz+dV2J753oWGcG27LWRLS8cEuGQs"}
 		 */
 
 		String result = encrypt(jsonObject.toString());
@@ -61,12 +59,12 @@ public class EncryptController {
 		// version 검증
 		if (encVersion.equals(encVer)) {
 			System.out.println("Enc-Key-Version 이 일치");
-			
+
 			String encData = body.get("data");
 			// 복호화
 			String res = decrypt(encData);
 			System.out.println("decrypt 결과1: " + res);
-			
+
 			// json 파싱
 			JSONObject jsonObject = new JSONObject(res);
 			jsonObject.put("RESPONSE_CODE", "200");
@@ -77,34 +75,28 @@ public class EncryptController {
 			System.out.println("Enc-Key-Version 이 불일치");
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("RESPONSE_CODE", "500");
-			System.out.println("jsonObject: "+ jsonObject);
+			System.out.println("jsonObject: " + jsonObject);
 			return encrypt(jsonObject.toString());
 		}
 	}
 
 	public String checksum(String message) {
-		System.out.println("message " + message);
 		ChecksumModule checksumModule = new ChecksumModule();
 		String checksumResult = checksumModule.checksum(message);
-		System.out.println("checksumResult " + checksumResult);
 
 		return checksumResult;
 	}
 
 	public String encrypt(String data) {
-
 		CryptoModule cryptoModule = new CryptoModule();
 		String encryptResult = cryptoModule.encrypt(strKey, data);
-		// System.out.println("encryptResult " + encryptResult);
 
 		return encryptResult;
 	}
 
 	public String decrypt(String encryptResult) {
 		CryptoModule cryptoModule = new CryptoModule();
-
 		String decryptResult = cryptoModule.decrypt(strKey, encryptResult);
-		// System.out.println("decryptResult " + decryptResult);
 
 		return decryptResult;
 	}
