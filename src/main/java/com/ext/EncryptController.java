@@ -17,7 +17,6 @@ import go.kr.dsp.api.CryptoModule;
 public class EncryptController {
 
 	String strKey = "rAKr1kf+NERW2TG+CmgKN/k9JOu0nct9aPXnHzp0RQ4=";
-	String encVer = "1";
 
 	@GetMapping("/test1")
 	public void dotest() {
@@ -53,11 +52,11 @@ public class EncryptController {
 		System.out.println("userinfo***" + body);
 
 		String encVersion = header.get("enc-key-version");
-		System.out.println("controller Enc-Key-Version 값:" + encVer);
+		System.out.println("controller Enc-Key-Version 값:" + Code.encVer);
 		System.out.println("전달된 Enc-Key-Version 값:" + encVersion);
 
 		// version 검증
-		if (encVersion.equals(encVer)) {
+		if (encVersion.equals(Code.encVer)) {
 			System.out.println("Enc-Key-Version 이 일치");
 
 			String encData = body.get("data");
@@ -67,14 +66,14 @@ public class EncryptController {
 
 			// json 파싱
 			JSONObject jsonObject = new JSONObject(res);
-			jsonObject.put("RESPONSE_CODE", "200");
+			jsonObject.put(Code.RESPONSE_CODE, "200");
 			System.out.println("jsonObject: " + jsonObject);
 			return encrypt(jsonObject.toString());
 
 		} else {
 			System.out.println("Enc-Key-Version 이 불일치");
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("RESPONSE_CODE", "500");
+			jsonObject.put(Code.RESPONSE_CODE, "500");
 			System.out.println("jsonObject: " + jsonObject);
 			return encrypt(jsonObject.toString());
 		}
